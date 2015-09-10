@@ -1,0 +1,72 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width">
+	<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.0.23.min.js"></script>
+    <script>
+        Parse.initialize("aLmYi6OTvESP9aIZPS3VmYAFUjzEi6zl72YZV745", "SsSIc8iq69qtZ6oHdLIzwoWM0kiXghAVMO2JNI9k");
+        var ItemControll = Parse.Object.extend("Teste");
+        
+        function addDesc() {
+            var itemCtrl = new ItemControll();
+            itemCtrl.save({desc:document.getElementById("desc").value}, {
+                success: function(object) {
+                    console.log("Saved to parse.");
+                    console.dir(object);
+                    loadDescs();
+                },
+                error: function(model, error) {
+                    console.log("Error!");
+                    console.dir(error);
+                }
+		    });
+        }
+        
+		function loadDescs() {
+            var query = new Parse.Query(ItemControll);
+            query.find({
+                success: function (results) {
+                    var descs = ""; 
+                    for (var i = 0; i < results.length; i++) {
+                        descs += results[i].get('desc') + "<br/>";
+                    }
+                    document.getElementById("descs").innerHTML = descs;
+                },
+                error: function(model, error) {
+                    console.log("Error!");
+                    console.dir(error);
+                }
+            });    
+        }
+        
+        function consultar() {
+            var query = new Parse.Query(ItemControll);
+            query.equalTo("desc", document.getElementById("desc").value);
+            query.find({
+                success: function (results) {
+                    var descs = ""; 
+                    for (var i = 0; i < results.length; i++) {
+                        descs += results[i].get('desc') + "<br/>";
+                    }
+                    document.getElementById("descs").innerHTML = descs;
+                },
+                error: function(model, error) {
+                    console.log("Error!");
+                    console.dir(error);
+                }
+            });    
+        }
+    
+        
+    </script>
+</head>
+<body onload="loadDescs();">
+    Descricao:<input type="text" id="desc"></input>
+    <br/>
+    <button onclick="addDesc()">Incluir</button>
+    <button onclick="consultar()">Consultar</button>
+    <button onclick="loadDescs()">Limpar</button>
+    <br/>
+    <br/>
+    <div id="descs"></div>
+</body>
+</html>    
